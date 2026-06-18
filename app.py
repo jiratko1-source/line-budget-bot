@@ -1,7 +1,7 @@
 from flask import Flask, request
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import TextSendMessage, QuickReply, QuickReplyButton, MessageAction
+from linebot.models import MessageEvent, TextMessage, TextSendMessage, QuickReply, QuickReplyButton, MessageAction
 import os
 
 app = Flask(__name__)
@@ -24,11 +24,8 @@ def callback():
     
     return "OK", 200
 
-@handler.add
+@handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    if event.type != "message" or event.message.type != "text":
-        return
-    
     quick_reply = QuickReply(items=[
         QuickReplyButton(action=MessageAction(label="💸 บันทึกรายจ่าย", text="บันทึกรายจ่าย")),
         QuickReplyButton(action=MessageAction(label="💰 บันทึกรายรับ", text="บันทึกรายรับ")),
